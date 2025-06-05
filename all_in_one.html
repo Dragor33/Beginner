@@ -1,0 +1,682 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>D&D Solo Play</title>
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;700&family=Open+Sans:wght@400;600&display=swap" rel="stylesheet">
+    <style>
+        /* D&D Solo UI - Manus Space Style */
+        :root {
+          /* Color Scheme */
+          --primary-color: #e63946;     /* Red */
+          --secondary-color: #1d3557;   /* Black */
+          --background-color: #f1faee;  /* White */
+          --accent-color: #a8dadc;      /* Light Gray */
+          --text-color: #1d3557;        /* Black */
+          --text-light: #f1faee;        /* White */
+          --card-bg: #ffffff;           /* White */
+          --card-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+          
+          /* Typography */
+          --font-heading: 'Montserrat', sans-serif;
+          --font-body: 'Open Sans', sans-serif;
+          
+          /* Spacing */
+          --spacing-xs: 0.25rem;
+          --spacing-sm: 0.5rem;
+          --spacing-md: 1rem;
+          --spacing-lg: 1.5rem;
+          --spacing-xl: 2rem;
+          
+          /* Border Radius */
+          --border-radius-sm: 4px;
+          --border-radius-md: 8px;
+          --border-radius-lg: 12px;
+        }
+
+        /* Base Styles */
+        body {
+          font-family: var(--font-body);
+          background-color: var(--background-color);
+          color: var(--text-color);
+          margin: 0;
+          padding: 0;
+          line-height: 1.6;
+        }
+
+        h1, h2, h3, h4, h5, h6 {
+          font-family: var(--font-heading);
+          font-weight: 700;
+          margin-top: 0;
+        }
+
+        a {
+          color: var(--primary-color);
+          text-decoration: none;
+        }
+
+        a:hover {
+          text-decoration: underline;
+        }
+
+        /* Layout Components */
+        .container {
+          width: 100%;
+          max-width: 1200px;
+          margin: 0 auto;
+          padding: 0 var(--spacing-md);
+        }
+
+        /* Header */
+        .header {
+          background-color: var(--secondary-color);
+          color: var(--text-light);
+          padding: var(--spacing-md) 0;
+        }
+
+        .header-content {
+          display: flex;
+          justify-content: space-between;
+          align-items: center;
+        }
+
+        .site-title {
+          font-size: 1.8rem;
+          margin: 0;
+        }
+
+        /* Navigation */
+        .nav-tabs {
+          display: flex;
+          background-color: var(--secondary-color);
+          padding: 0 var(--spacing-md);
+          overflow-x: auto;
+        }
+
+        .nav-tab {
+          padding: var(--spacing-md) var(--spacing-lg);
+          color: var(--text-light);
+          font-weight: 500;
+          cursor: pointer;
+          border-bottom: 3px solid transparent;
+          transition: all 0.3s ease;
+        }
+
+        .nav-tab:hover {
+          background-color: rgba(255, 255, 255, 0.1);
+        }
+
+        .nav-tab.active {
+          border-bottom: 3px solid var(--primary-color);
+          background-color: rgba(230, 57, 70, 0.2);
+        }
+
+        /* Card Components */
+        .card {
+          background-color: var(--card-bg);
+          border-radius: var(--border-radius-md);
+          box-shadow: var(--card-shadow);
+          margin-bottom: var(--spacing-lg);
+          overflow: hidden;
+        }
+
+        .card-header {
+          background-color: var(--primary-color);
+          color: var(--text-light);
+          padding: var(--spacing-md) var(--spacing-lg);
+          font-weight: 600;
+        }
+
+        .card-body {
+          padding: var(--spacing-lg);
+        }
+
+        .card-footer {
+          padding: var(--spacing-md) var(--spacing-lg);
+          background-color: rgba(0, 0, 0, 0.03);
+          border-top: 1px solid rgba(0, 0, 0, 0.1);
+        }
+
+        /* Card Grid */
+        .card-grid {
+          display: grid;
+          grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+          gap: var(--spacing-lg);
+          margin: var(--spacing-lg) 0;
+        }
+
+        /* Buttons */
+        .btn {
+          display: inline-block;
+          font-weight: 500;
+          text-align: center;
+          white-space: nowrap;
+          vertical-align: middle;
+          user-select: none;
+          border: 1px solid transparent;
+          padding: 0.375rem 0.75rem;
+          font-size: 1rem;
+          line-height: 1.5;
+          border-radius: var(--border-radius-sm);
+          transition: all 0.15s ease-in-out;
+          cursor: pointer;
+        }
+
+        .btn-primary {
+          background-color: var(--primary-color);
+          color: var(--text-light);
+        }
+
+        .btn-primary:hover {
+          background-color: #d32836;
+        }
+
+        .btn-secondary {
+          background-color: var(--secondary-color);
+          color: var(--text-light);
+        }
+
+        .btn-secondary:hover {
+          background-color: #152a45;
+        }
+
+        .btn-tertiary {
+          background-color: var(--card-bg);
+          color: var(--text-color);
+          border: 1px solid var(--text-color);
+        }
+
+        .btn-tertiary:hover {
+          background-color: rgba(0, 0, 0, 0.05);
+        }
+
+        /* Form Elements */
+        .form-group {
+          margin-bottom: var(--spacing-md);
+        }
+
+        .form-label {
+          display: block;
+          margin-bottom: var(--spacing-xs);
+          font-weight: 500;
+        }
+
+        .form-control {
+          display: block;
+          width: 100%;
+          padding: 0.375rem 0.75rem;
+          font-size: 1rem;
+          line-height: 1.5;
+          color: var(--text-color);
+          background-color: var(--card-bg);
+          background-clip: padding-box;
+          border: 1px solid #ced4da;
+          border-radius: var(--border-radius-sm);
+          transition: border-color 0.15s ease-in-out, box-shadow 0.15s ease-in-out;
+        }
+
+        .form-control:focus {
+          border-color: var(--primary-color);
+          outline: 0;
+          box-shadow: 0 0 0 0.2rem rgba(230, 57, 70, 0.25);
+        }
+
+        /* Footer */
+        .footer {
+          background-color: var(--secondary-color);
+          color: var(--text-light);
+          padding: var(--spacing-lg) 0;
+          margin-top: var(--spacing-xl);
+        }
+
+        .footer-content {
+          display: flex;
+          justify-content: space-between;
+          align-items: center;
+        }
+
+        /* Utility Classes */
+        .text-primary {
+          color: var(--primary-color);
+        }
+
+        .text-secondary {
+          color: var(--secondary-color);
+        }
+
+        .bg-primary {
+          background-color: var(--primary-color);
+        }
+
+        .bg-secondary {
+          background-color: var(--secondary-color);
+        }
+
+        .mt-1 { margin-top: var(--spacing-xs); }
+        .mt-2 { margin-top: var(--spacing-sm); }
+        .mt-3 { margin-top: var(--spacing-md); }
+        .mt-4 { margin-top: var(--spacing-lg); }
+        .mt-5 { margin-top: var(--spacing-xl); }
+
+        .mb-1 { margin-bottom: var(--spacing-xs); }
+        .mb-2 { margin-bottom: var(--spacing-sm); }
+        .mb-3 { margin-bottom: var(--spacing-md); }
+        .mb-4 { margin-bottom: var(--spacing-lg); }
+        .mb-5 { margin-bottom: var(--spacing-xl); }
+
+        /* Responsive Adjustments */
+        @media (max-width: 768px) {
+          .card-grid {
+            grid-template-columns: 1fr;
+          }
+          
+          .nav-tabs {
+            flex-wrap: wrap;
+          }
+          
+          .nav-tab {
+            flex: 1 1 auto;
+            text-align: center;
+            padding: var(--spacing-sm) var(--spacing-md);
+          }
+          
+          .footer-content {
+            flex-direction: column;
+            text-align: center;
+          }
+          
+          .footer-content > div {
+            margin-bottom: var(--spacing-md);
+          }
+        }
+
+        /* Tab-specific Styles */
+
+        /* Visuals Tab */
+        .character-card {
+          display: flex;
+          flex-direction: column;
+        }
+
+        .character-portrait {
+          height: 200px;
+          background-color: var(--accent-color);
+          display: flex;
+          align-items: center;
+          justify-content: center;
+        }
+
+        .character-stats {
+          display: grid;
+          grid-template-columns: repeat(3, 1fr);
+          gap: var(--spacing-sm);
+        }
+
+        .stat-item {
+          text-align: center;
+          padding: var(--spacing-sm);
+          border-radius: var(--border-radius-sm);
+          background-color: rgba(0, 0, 0, 0.03);
+        }
+
+        /* Lore Tab */
+        .journal-card {
+          margin-bottom: var(--spacing-lg);
+        }
+
+        .journal-editor {
+          min-height: 200px;
+          border: 1px solid #ced4da;
+          border-radius: var(--border-radius-sm);
+          padding: var(--spacing-md);
+        }
+
+        /* Art Tab */
+        .art-gallery {
+          display: grid;
+          grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+          gap: var(--spacing-md);
+        }
+
+        .art-item {
+          position: relative;
+          height: 200px;
+          background-color: var(--accent-color);
+          border-radius: var(--border-radius-sm);
+          overflow: hidden;
+        }
+
+        .art-item img {
+          width: 100%;
+          height: 100%;
+          object-fit: cover;
+        }
+
+        /* AI Tab */
+        .chat-container {
+          height: 400px;
+          overflow-y: auto;
+          border: 1px solid #ced4da;
+          border-radius: var(--border-radius-sm);
+          padding: var(--spacing-md);
+          margin-bottom: var(--spacing-md);
+        }
+
+        .chat-message {
+          margin-bottom: var(--spacing-md);
+          max-width: 80%;
+        }
+
+        .chat-message.user {
+          margin-left: auto;
+          background-color: var(--primary-color);
+          color: var(--text-light);
+          border-radius: var(--border-radius-sm) 0 var(--border-radius-sm) var(--border-radius-sm);
+          padding: var(--spacing-sm) var(--spacing-md);
+        }
+
+        .chat-message.ai {
+          margin-right: auto;
+          background-color: var(--secondary-color);
+          color: var(--text-light);
+          border-radius: 0 var(--border-radius-sm) var(--border-radius-sm) var(--border-radius-sm);
+          padding: var(--spacing-sm) var(--spacing-md);
+        }
+
+        /* Map Tab */
+        .map-container {
+          height: 500px;
+          background-color: var(--accent-color);
+          border-radius: var(--border-radius-sm);
+          position: relative;
+        }
+
+        .map-controls {
+          position: absolute;
+          bottom: var(--spacing-md);
+          right: var(--spacing-md);
+          display: flex;
+          gap: var(--spacing-xs);
+        }
+
+        .location-list {
+          margin-top: var(--spacing-lg);
+        }
+
+        /* Visual Fiction Map Tab */
+        .visual-map-container {
+          height: 500px;
+          background-color: var(--accent-color);
+          border-radius: var(--border-radius-sm);
+          position: relative;
+        }
+
+        .character-path {
+          stroke: var(--primary-color);
+          stroke-width: 3;
+          fill: none;
+          stroke-dasharray: 5,5;
+        }
+
+        .location-marker {
+          position: absolute;
+          width: 20px;
+          height: 20px;
+          border-radius: 50%;
+          background-color: var(--primary-color);
+          transform: translate(-50%, -50%);
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          color: var(--text-light);
+          font-size: 12px;
+          font-weight: bold;
+        }
+
+        /* Chat History Tab */
+        .conversation-card {
+          margin-bottom: var(--spacing-md);
+        }
+
+        .conversation-header {
+          display: flex;
+          justify-content: space-between;
+          align-items: center;
+        }
+
+        .conversation-messages {
+          max-height: 300px;
+          overflow-y: auto;
+          padding: var(--spacing-sm);
+          border: 1px solid rgba(0, 0, 0, 0.1);
+          border-radius: var(--border-radius-sm);
+          margin: var(--spacing-sm) 0;
+        }
+    </style>
+</head>
+<body>
+    <!-- Header -->
+    <header class="header">
+        <div class="container header-content">
+            <h1 class="site-title">D&D Solo Play</h1>
+            <div class="header-actions">
+                <button class="btn btn-primary">Export Campaign</button>
+            </div>
+        </div>
+    </header>
+
+    <!-- Navigation Tabs -->
+    <nav class="nav-tabs">
+        <div class="nav-tab active" data-tab="visuals">Visuals</div>
+        <div class="nav-tab" data-tab="lore">Lore</div>
+        <div class="nav-tab" data-tab="art">Art</div>
+        <div class="nav-tab" data-tab="ai">AI</div>
+        <div class="nav-tab" data-tab="chat-history">Chat History</div>
+        <div class="nav-tab" data-tab="map">Map</div>
+        <div class="nav-tab" data-tab="visual-fiction-map">Visual Fiction Map</div>
+    </nav>
+
+    <!-- Main Content Area -->
+    <main class="container mt-4">
+        <!-- Visuals Tab Content -->
+        <div class="tab-content active" id="visuals-tab">
+            <h2 class="mb-3">Character Sheets</h2>
+            
+            <div class="card-grid">
+                <!-- Character Card 1 -->
+                <div class="card character-card">
+                    <div class="card-header">
+                        Thorne Ironheart
+                    </div>
+                    <div class="character-portrait">
+                        <img src="https://via.placeholder.com/200x200" alt="Character Portrait">
+                    </div>
+                    <div class="card-body">
+                        <p><strong>Race:</strong> Dwarf</p>
+                        <p><strong>Class:</strong> Fighter</p>
+                        <p><strong>Level:</strong> 5</p>
+                        
+                        <h4 class="mt-3 mb-2">Stats</h4>
+                        <div class="character-stats">
+                            <div class="stat-item">
+                                <div class="stat-label">STR</div>
+                                <div class="stat-value">16</div>
+                            </div>
+                            <div class="stat-item">
+                                <div class="stat-label">DEX</div>
+                                <div class="stat-value">12</div>
+                            </div>
+                            <div class="stat-item">
+                                <div class="stat-label">CON</div>
+                                <div class="stat-value">16</div>
+                            </div>
+                            <div class="stat-item">
+                                <div class="stat-label">INT</div>
+                                <div class="stat-value">10</div>
+                            </div>
+                            <div class="stat-item">
+                                <div class="stat-label">WIS</div>
+                                <div class="stat-value">13</div>
+                            </div>
+                            <div class="stat-item">
+                                <div class="stat-label">CHA</div>
+                                <div class="stat-value">8</div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="card-footer">
+                        <button class="btn btn-primary">Edit Character</button>
+                    </div>
+                </div>
+                
+                <!-- Character Card 2 -->
+                <div class="card character-card">
+                    <div class="card-header">
+                        Lyra Moonshadow
+                    </div>
+                    <div class="character-portrait">
+                        <img src="https://via.placeholder.com/200x200" alt="Character Portrait">
+                    </div>
+                    <div class="card-body">
+                        <p><strong>Race:</strong> Elf</p>
+                        <p><strong>Class:</strong> Wizard</p>
+                        <p><strong>Level:</strong> 4</p>
+                        
+                        <h4 class="mt-3 mb-2">Stats</h4>
+                        <div class="character-stats">
+                            <div class="stat-item">
+                                <div class="stat-label">STR</div>
+                                <div class="stat-value">8</div>
+                            </div>
+                            <div class="stat-item">
+                                <div class="stat-label">DEX</div>
+                                <div class="stat-value">14</div>
+                            </div>
+                            <div class="stat-item">
+                                <div class="stat-label">CON</div>
+                                <div class="stat-value">12</div>
+                            </div>
+                            <div class="stat-item">
+                                <div class="stat-label">INT</div>
+                                <div class="stat-value">17</div>
+                            </div>
+                            <div class="stat-item">
+                                <div class="stat-label">WIS</div>
+                                <div class="stat-value">13</div>
+                            </div>
+                            <div class="stat-item">
+                                <div class="stat-label">CHA</div>
+                                <div class="stat-value">10</div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="card-footer">
+                        <button class="btn btn-primary">Edit Character</button>
+                    </div>
+                </div>
+                
+                <!-- Add New Character Card -->
+                <div class="card character-card">
+                    <div class="card-body" style="display: flex; flex-direction: column; justify-content: center; align-items: center; height: 100%; min-height: 300px;">
+                        <div style="font-size: 3rem; color: var(--primary-color); margin-bottom: var(--spacing-md);">+</div>
+                        <h3>Add New Character</h3>
+                        <p class="text-center">Create a new character for your campaign</p>
+                        <button class="btn btn-primary mt-3">Create Character</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Lore Tab Content (Hidden by default) -->
+        <div class="tab-content" id="lore-tab" style="display: none;">
+            <h2 class="mb-3">Campaign Journal</h2>
+            
+            <div class="card journal-card">
+                <div class="card-header">
+                    The Beginning of the Journey
+                </div>
+                <div class="card-body">
+                    <div class="journal-editor">
+                        <p>Our adventure began in the small village of Oakvale, where rumors of ancient ruins had drawn adventurers from across the land. The local tavern, The Prancing Pony, served as our meeting place.</p>
+                        <p>Thorne Ironheart, a sturdy dwarf fighter, was the first to arrive, followed shortly by Lyra Moonshadow, an elven wizard with a keen interest in forgotten magics.</p>
+                        <p>The tavern keeper, an old man named Barley, shared tales of strange lights seen near the eastern woods, where the ruins were said to be located.</p>
+                    </div>
+                </div>
+                <div class="card-footer">
+                    <button class="btn btn-primary">Save Entry</button>
+                    <button class="btn btn-tertiary">Add New Entry</button>
+                </div>
+            </div>
+            
+            <h2 class="mb-3 mt-4">NPCs</h2>
+            <div class="card-grid">
+                <div class="card">
+                    <div class="card-header">
+                        Barley Wheatfield
+                    </div>
+                    <div class="card-body">
+                        <p><strong>Role:</strong> Tavern Keeper</p>
+                        <p><strong>Location:</strong> Oakvale Village</p>
+                        <p><strong>Description:</strong> An elderly man with a long white beard and kind eyes. Knows many local legends and rumors.</p>
+                    </div>
+                </div>
+                
+                <div class="card">
+                    <div class="card-header">
+                        Magistrate Thornton
+                    </div>
+                    <div class="card-body">
+                        <p><strong>Role:</strong> Village Leader</p>
+                        <p><strong>Location:</strong> Oakvale Village</p>
+                        <p><strong>Description:</strong> A stern man in his fifties with a no-nonsense attitude. Concerned about the strange occurrences near the ruins.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Other tab contents would be added here, hidden by default -->
+        
+    </main>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <div class="container footer-content">
+            <div>
+                <p>&copy; 2025 D&D Solo Play</p>
+            </div>
+            <div>
+                <button class="btn btn-tertiary">Import Campaign</button>
+                <button class="btn btn-tertiary">Export Campaign</button>
+            </div>
+        </div>
+    </footer>
+
+    <script>
+        // Simple tab switching functionality
+        document.addEventListener('DOMContentLoaded', function() {
+            const tabs = document.querySelectorAll('.nav-tab');
+            const tabContents = document.querySelectorAll('.tab-content');
+            
+            tabs.forEach(tab => {
+                tab.addEventListener('click', function() {
+                    // Remove active class from all tabs
+                    tabs.forEach(t => t.classList.remove('active'));
+                    
+                    // Add active class to clicked tab
+                    this.classList.add('active');
+                    
+                    // Hide all tab contents
+                    tabContents.forEach(content => {
+                        content.style.display = 'none';
+                    });
+                    
+                    // Show the selected tab content
+                    const tabId = this.getAttribute('data-tab') + '-tab';
+                    document.getElementById(tabId).style.display = 'block';
+                });
+            });
+        });
+    </script>
+</body>
+</html>
